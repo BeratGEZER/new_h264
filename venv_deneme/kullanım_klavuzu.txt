@@ -1,0 +1,27 @@
+bu siteden baka lirsin nasıl yapıldıgına.
+https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
+https://www.youtube.com/watch?v=ihvSp94WefU
+
+1)virtual environments kuracagımız dosya dizinine gideriz.
+2)python -m venv venv yazarak dosyayı oluşturruz. 
+activate için : 
+
+venv\Scripts\activate
+
+pip install (kütüphane)
+pip list ile hangi kütüphaneler var görebliyoruz.
+
+deactivate:
+
+deactivate yazılır.
+*** (venv) PS C:\Users\win10\OneDrive\Masaüstü\venv_deneme> python deneme.py gibi ise virtual	environments kullanıyor.
+
+
+
+GİT KULLANIMI
+
+terminale yazabilirisn.
+
+git add .
+git commit "yorum"
+git push
