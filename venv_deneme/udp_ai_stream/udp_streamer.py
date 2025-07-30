@@ -4,7 +4,6 @@ import threading
 import time
 import os
 
-
 class StreamManager:
     def __init__(self):
         self.active_streams = {}
@@ -36,18 +35,16 @@ class StreamManager:
         return {"active_streams": list(self.active_streams.keys())}
 
     def stream_video(self, video_id, stop_flag):
-        # ✅ Doğru dosya yolu oluşturuluyor (streamer.py ile aynı klasördeki videos/ klasörü)
         path = os.path.join(os.path.dirname(__file__), "videos", f"{video_id}.mp4")
         if not os.path.exists(path):
             print(f"❌ Dosya bulunamadı: {path}")
             return
 
         cap = cv2.VideoCapture(path)
-        udp_ip = "127.0.0.1"  # Yerel ağ için uygun
+        udp_ip = "127.0.0.1"
         udp_port = self.get_udp_port(video_id)
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        # FPS alma ve gönderim aralığı hesaplama
         fps = cap.get(cv2.CAP_PROP_FPS)
         if fps == 0 or fps is None:
             fps = 25
@@ -55,10 +52,10 @@ class StreamManager:
 
         gönderilen_paket_sayısı = 0
         gönderilen_toplam_byte = 0
+        CHUNK_SIZE = 60000  # ✅ Güvenli UDP paketi boyutu
 
         while cap.isOpened() and not stop_flag.is_set():
             start = time.time()
-
             ret, frame = cap.read()
             if not ret:
                 break
@@ -69,21 +66,20 @@ class StreamManager:
 
             data = buffer.tobytes()
 
-            # Paketleri parçalayarak gönder (1 MB limitli UDP parçası)
-            for i in range(0, len(data), 1000000):
-                paket = data[i:i+1000000]
+            for i in range(0, len(data), CHUNK_SIZE):
+                paket = data[i:i+CHUNK_SIZE]
                 sock.sendto(paket, (udp_ip, udp_port))
                 gönderilen_paket_sayısı += 1
                 gönderilen_toplam_byte += len(paket)
 
-            # FPS'ye uygun hızda gönderim
             elapsed = time.time() - start
             remaining = frame_interval - elapsed
             if remaining > 0:
                 time.sleep(remaining)
 
             print(f"🛑 Gönderilen Paket Sayısı: {gönderilen_paket_sayısı}")
-            print(f"📤 Gönderilen Toplam Veri: {gönderilen_toplam_byte} B ≈ {gönderilen_toplam_byte/1024:.2f} KB")
+            print(f"📤 Gönderilen Toplam Veri: {gönderilen_toplam_byte} B ≈ {gönderilen_toplam_byte / 1024:.2f} KB")
 
         cap.release()
         sock.close()
+        print(f"🔚 Video {video_id} yayını sonlandırıldı.")
