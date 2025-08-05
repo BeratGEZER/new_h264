@@ -21,7 +21,7 @@ class ReceiverManager:
 
     def receive_stream(self, udp_port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4 * 1024 * 1024)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4 * 1024 * 1024) 
         sock.bind(("0.0.0.0", udp_port))
         print(f"🎥 Dinleniyor: UDP {udp_port}")
 
@@ -58,6 +58,7 @@ class ReceiverManager:
                                     sock.close()
                                     return
                         buffer = b""
+                    
                     except Exception as decode_error:
                         print(f"⛔ Decode hatası: {decode_error}")
                         buffer = b""
@@ -68,7 +69,8 @@ class ReceiverManager:
             except Exception as e:
                 print(f"⛔ Hata (UDP {udp_port}): {e}")
                 break
-
+        
+        
 if __name__ == "__main__":
     manager = ReceiverManager()
     ports_to_listen = [4001, 4002, 4003, 4004]

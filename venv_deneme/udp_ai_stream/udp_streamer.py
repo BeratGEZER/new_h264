@@ -61,6 +61,7 @@ class StreamManager:
                 break
 
             suc, buffer = cv2.imencode('.jpg', frame)
+            print(f"burdayım  {buffer} burdayım ")
             if not suc:
                 continue
 

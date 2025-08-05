@@ -62,7 +62,10 @@ class ReceiverManager:
             except Exception as e:
                 print(f"⛔ Hata (UDP {udp_port}): {e}")
                 break
-
+        
+        paket_sayisi = 0
+        alinan_toplam_byte = 0
+        
 if __name__ == "__main__":
     manager = ReceiverManager()
     ports_to_listen = [4001, 4002, 4003, 4004]
